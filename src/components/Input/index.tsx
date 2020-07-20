@@ -1,4 +1,10 @@
-import React, { InputHTMLAttributes, useEffect, useRef } from 'react';
+import React, {
+  InputHTMLAttributes,
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+} from 'react';
 import { IconBaseProps } from 'react-icons';
 import { useField } from '@unform/core';
 
@@ -17,8 +23,26 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 // Como o ícone tem que ser passado em forma de componente para o HTML, temos que transformar a propriedade icon e Icon com o I maiúsculo.
 // Fazemos uma verificação no ícone, se o ícone existir, então mostra ele.
 const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }) => {
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [isFocused, setIsFocused] = useState(false); /* Começa como falso */
+  const [isFilled, setIsFilled] = useState(false); /* Começa como falso */
+
   const { fieldName, defaultValue, error, registerField } = useField(name);
+
+  const handleInputBlur = useCallback(() => {
+    setIsFocused(false);
+
+    /* A ? informa que Se inputRef.current tiver alguma coisa, ele verifica o value dele */
+    /* Se o input tem algum valor adicionamos no estado de preenchido(Filled), se não continua false. Iremos utilizar essa condição para deixar nosso ícone laranjado quando tiver alguma coisa dentro do nosso input */
+    /* if (inputRef.current?.value) {
+      setIsFilled(true);
+    } else {
+      setIsFilled(false);
+    } */
+
+    // Porém temos uma outra forma de representar essa consição transformando o valor do input em booleano com as !!. Ou seja, se tiver valor ele retorna true, se não, ele retorna false:
+    setIsFilled(!!inputRef.current?.value);
+  }, []); /* Vazio a função nunca é recriada, ou seja, não estamos colocando o monitoramento se alguma variável alterar ele executa novamente */
 
   useEffect(() => {
     registerField({
@@ -28,10 +52,24 @@ const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }) => {
     });
   }, [fieldName, registerField]);
 
+  /* Criando a função para informar ao Container que o input tem foco ou não. Com o Callback essa função só será executada uma vez e memorizada */
+  const handleInputFocus = useCallback(() => {
+    setIsFocused(true);
+  }, []);
+
   return (
-    <Container>
+    /* Passamos então o estado atual do foco e do preenchimento do input(Filled) para o container, pq ele que estiliza o nosso input. Não esquecer de passar o tipo dele lá na interface do styles */
+    <Container isFocused={isFocused} isFilled={isFilled}>
       {Icon && <Icon size={20} />}
-      <input defaultValue={defaultValue} ref={inputRef} {...rest} />
+      <input
+        /* Recebeu foco, armazenamos true no estado dele falando que ele tem o foco */
+        onFocus={handleInputFocus}
+        /* Perdeu o foco, armazena false no estado com a função hanbleInputBlur */
+        onBlur={handleInputBlur}
+        defaultValue={defaultValue}
+        ref={inputRef}
+        {...rest}
+      />
     </Container>
   );
 };
