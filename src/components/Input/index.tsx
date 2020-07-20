@@ -1,5 +1,6 @@
-import React, { InputHTMLAttributes } from 'react';
+import React, { InputHTMLAttributes, useEffect, useRef } from 'react';
 import { IconBaseProps } from 'react-icons';
+import { useField } from '@unform/core';
 
 import { Container } from './styles';
 
@@ -15,10 +16,23 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 // Passamos todas as propriedades vindas da interface com o spread ...rest. Declaramos como propriedade vindas da página principal, os icones e o resto das propriedades
 // Como o ícone tem que ser passado em forma de componente para o HTML, temos que transformar a propriedade icon e Icon com o I maiúsculo.
 // Fazemos uma verificação no ícone, se o ícone existir, então mostra ele.
-const Input: React.FC<InputProps> = ({ icon: Icon, ...rest }) => (
-  <Container>
-    {Icon && <Icon size={20} />}
-    <input {...rest} />
-  </Container>
-);
+const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }) => {
+  const inputRef = useRef(null);
+  const { fieldName, defaultValue, error, registerField } = useField(name);
+
+  useEffect(() => {
+    registerField({
+      name: fieldName,
+      ref: inputRef.current,
+      path: 'value',
+    });
+  }, [fieldName, registerField]);
+
+  return (
+    <Container>
+      {Icon && <Icon size={20} />}
+      <input defaultValue={defaultValue} ref={inputRef} {...rest} />
+    </Container>
+  );
+};
 export default Input;
