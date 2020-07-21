@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { FiUser, FiMail, FiLock, FiArrowLeft } from 'react-icons/fi';
 import { Form } from '@unform/web';
+import * as Yup from 'yup';
 
 import logoImg from '../../assets/logo.svg';
 
@@ -11,9 +12,32 @@ import { Container, Content, Background } from './styles';
 
 const SignUp: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/ban-types
-  function handleSubmit(data: object): void {
-    console.log(data);
-  }
+  const handleSubmit = useCallback(async (data: object) => {
+    try {
+      /* Criado um schema de validação, utilizado para validar um objeto inteiro(.object) e terá a forma descrita no .shape. No nosso caso teremos o campo de nome, email e senha */
+      const schema = Yup.object().shape({
+        /* Este campo será do tipo string e será obrigatório(requered) */
+        name: Yup.string().required('Nome obrigatório'),
+        /* Neste caso, além de ser string, obrigatório, deve ser um email */
+        email: Yup.string()
+          .required('E-mail obrigatório')
+          .email('Digite um e-mail válido'),
+        /* A senha é uma string com no mínimo 6 caracteres */
+        password: Yup.string().min(
+          6,
+          'A senha deve ter pelo menos 6 caracteres',
+        ),
+      });
+
+      // Aguarde a validação(await) do schema com os dados recebidos pelo form
+      // Passamos algumas configurações para a validação, como o abortEarly que retorna todos os erros que for encontrado(false), e não somente um(true). Recuperamos esses erros através do inner do validate(verificar o retorno do validate através do console.log(err)).
+      await schema.validate(data, {
+        abortEarly: false,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
 
   return (
     <Container>
