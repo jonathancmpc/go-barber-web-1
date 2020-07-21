@@ -18,7 +18,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   icon?: React.ComponentType<IconBaseProps>;
 }
 
-// Passamos então ao nosso Function Components os atributos que terão nesse componente de Input, dessa forma temos todas as propriedades disponíveis para um input comum sendo que o name passa a ser obrigatório.
+// Passamos então ao nosso Function Components(FC) os atributos que terão nesse componente de Input, dessa forma temos todas as propriedades disponíveis para um input comum sendo que o name passa a ser obrigatório.
 // Passamos todas as propriedades vindas da interface com o spread ...rest. Declaramos como propriedade vindas da página principal, os icones e o resto das propriedades
 // Como o ícone tem que ser passado em forma de componente para o HTML, temos que transformar a propriedade icon e Icon com o I maiúsculo.
 // Fazemos uma verificação no ícone, se o ícone existir, então mostra ele.
@@ -27,6 +27,7 @@ const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }) => {
   const [isFocused, setIsFocused] = useState(false); /* Começa como falso */
   const [isFilled, setIsFilled] = useState(false); /* Começa como falso */
 
+  // com o useField do Unform, podemos verificar o conteúdo(value) dos inputs através da tag name.
   const { fieldName, defaultValue, error, registerField } = useField(name);
 
   const handleInputBlur = useCallback(() => {
@@ -42,7 +43,7 @@ const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }) => {
 
     // Porém temos uma outra forma de representar essa consição transformando o valor do input em booleano com as !!. Ou seja, se tiver valor ele retorna true, se não, ele retorna false:
     setIsFilled(!!inputRef.current?.value);
-  }, []); /* Vazio a função nunca é recriada, ou seja, não estamos colocando o monitoramento se alguma variável alterar ele executa novamente */
+  }, []); /* Vazio a função nunca é recriada, ou seja, NÃO estamos colocando o monitoramento se alguma variável alterar ele executa novamente */
 
   useEffect(() => {
     registerField({
@@ -70,6 +71,8 @@ const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }) => {
         ref={inputRef}
         {...rest}
       />
+
+      {error}
     </Container>
   );
 };
