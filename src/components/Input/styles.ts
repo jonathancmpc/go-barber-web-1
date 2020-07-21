@@ -1,8 +1,11 @@
 import styled, { css } from 'styled-components';
+/* Importando o Tooltip para fazermos a estilização em cima do Error, basicamente iremos estilizar o Componente Tooltip que criamos, utilizando o estilo do Error */
+import Tooltip from '../Tooltip';
 
 interface ContainerProps {
   isFocused: boolean;
   isFilled: boolean;
+  isErrored: boolean;
 }
 
 export const Container = styled.div<ContainerProps>`
@@ -20,6 +23,12 @@ export const Container = styled.div<ContainerProps>`
   & + div {
     margin-top: 8px;
   }
+
+  ${props =>
+    props.isErrored &&
+    css`
+      border-color: #c53030;
+    `}
 
   /* Acessando as propriedades do componente Container para passarmos o foco. Se for true passamos o css */
   ${props =>
@@ -51,5 +60,25 @@ export const Container = styled.div<ContainerProps>`
 
   svg {
     margin-right: 16px;
+  }
+`;
+
+/* Estilizando o Componente Tooltip através do Error, isso deve ser eito através de classe, por isso temos que passa o ClasName lá no componente Tooltip. Ele está praticamente herdando a estilização do Tooltip */
+export const Error = styled(Tooltip)`
+  height: 20px;
+  margin-left: 16px;
+
+  svg {
+    margin: 0;
+  }
+
+  /* Estilizando o balão do tooltip vindo na herança, nesse caso ele sobreescreve o estilo original do Tooltip */
+  span {
+    background: #c53030;
+    color: #fdfdfd;
+
+    &::before {
+      border-color: #c53030 transparent;
+    }
   }
 `;

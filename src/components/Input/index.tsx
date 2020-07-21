@@ -6,9 +6,10 @@ import React, {
   useCallback,
 } from 'react';
 import { IconBaseProps } from 'react-icons';
+import { FiAlertCircle } from 'react-icons/fi';
 import { useField } from '@unform/core';
 
-import { Container } from './styles';
+import { Container, Error } from './styles';
 
 // Temos que passar os parâmetros que o input vai receber como obrigatórios, porém ele recebe todas as propriedades que um input comum do html vai receber, por isso extendemos as propriedades que já existem por padrão no input
 // Importamos o IconBaeProps de dentro do react-icons, pois ele traz todas as propriedades que um ícone deve receber, então passamos como tipo do React.ComponentType.
@@ -60,7 +61,8 @@ const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }) => {
 
   return (
     /* Passamos então o estado atual do foco e do preenchimento do input(Filled) para o container, pq ele que estiliza o nosso input. Não esquecer de passar o tipo dele lá na interface do styles */
-    <Container isFocused={isFocused} isFilled={isFilled}>
+    // Além disso também passamos o isErrored que envia para o Container se existe ou não erro na variável error.
+    <Container isErrored={!!error} isFocused={isFocused} isFilled={isFilled}>
       {Icon && <Icon size={20} />}
       <input
         /* Recebeu foco, armazenamos true no estado dele falando que ele tem o foco */
@@ -71,8 +73,12 @@ const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }) => {
         ref={inputRef}
         {...rest}
       />
-
-      {error}
+      {/* Caso exista o erro, mostre o ícone */}
+      {error && (
+        <Error title={error}>
+          <FiAlertCircle color="#c53030" size={20} />
+        </Error>
+      )}
     </Container>
   );
 };
