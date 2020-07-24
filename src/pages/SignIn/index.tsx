@@ -1,9 +1,10 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useContext } from 'react';
 import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
 
+import AuthContext from '../../context/AuthContext';
 import getValidationErros from '../../utils/getValidationErros';
 
 import logoImg from '../../assets/logo.svg';
@@ -18,6 +19,10 @@ const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   // Podemos verificar no console todas as funções que podemos utilizar para manipular o current dentro do useRef.
   /* console.log(formRef); */
+
+  // Acessando as informações do Contexto, nesse caso as informações do usuário que passamos em context.
+  const { name } = useContext(AuthContext);
+  console.log(name);
 
   // eslint-disable-next-line @typescript-eslint/ban-types
   const handleSubmit = useCallback(async (data: object) => {
