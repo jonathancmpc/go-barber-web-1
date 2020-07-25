@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import React, { useEffect } from 'react';
 import {
   FiAlertCircle,
@@ -12,6 +13,7 @@ import { ToastMessage, useToast } from '../../../context/ToastContext';
 // A interface foi criada reaproveitando a interface que está no index do ToastContext
 interface ToastProps {
   message: ToastMessage;
+  style: object;
 }
 
 // Criando um objeto para passar os ícones de acordo com o tipo de alerta.
@@ -21,7 +23,7 @@ const icons = {
   success: <FiCheckCircle size={24} />,
 };
 
-const Toast: React.FC<ToastProps> = ({ message }) => {
+const Toast: React.FC<ToastProps> = ({ message, style }) => {
   const { removeToast } = useToast();
 
   // Passando um efeito para executar toda vez que o Toast surgir na tela, colocamos então um tempo para ele ficar visível, depois o removemos.
@@ -37,7 +39,11 @@ const Toast: React.FC<ToastProps> = ({ message }) => {
   }, [message.id, removeToast]);
 
   return (
-    <Container type={message.type} hasDescription={!!message.description}>
+    <Container
+      type={message.type}
+      hasDescription={!!message.description}
+      style={style}
+    >
       {/* Trazendo o ícone de acordo com o tipo, como não é obrigatória, passamos info caso não exista o tipo */}
       {icons[message.type || 'info']}
 
