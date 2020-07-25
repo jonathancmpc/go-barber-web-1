@@ -5,6 +5,7 @@ import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
 
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
 import getValidationErros from '../../utils/getValidationErros';
 
 import logoImg from '../../assets/logo.svg';
@@ -29,6 +30,7 @@ const SignIn: React.FC = () => {
   // Buscamos o método signIn em nosso Context, para salvarmos as informações do usuário para serem usadas em todas as páginas.
   // Fizemos um hook para o código ficar melhor visualmente para substiruir o useContext(AuthContext)
   const { signIn } = useAuth();
+  const { addToast } = useToast();
 
   // eslint-disable-next-line @typescript-eslint/ban-types
   const handleSubmit = useCallback(
@@ -54,7 +56,7 @@ const SignIn: React.FC = () => {
         });
 
         // Chamando o método signIn de dentro do nosso contexto de validação e passando os dados do usuário para validação na API e fornecimento das credenciais de usuário a todas as páginas dentro do Contexto.
-        signIn({
+        await signIn({
           email: data.email,
           password: data.password,
         });
@@ -73,9 +75,10 @@ const SignIn: React.FC = () => {
         }
 
         // Se não estiver instânciado em validationError, então retornamos uma mensagem genérica para mostrar nos Toast
+        addToast();
       }
     },
-    [signIn],
+    [signIn, addToast],
   );
 
   return (
