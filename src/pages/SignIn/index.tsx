@@ -27,7 +27,10 @@ const SignIn: React.FC = () => {
   /* console.log(formRef); */
 
   // Buscamos o método signIn em nosso Context, para salvarmos as informações do usuário para serem usadas em todas as páginas.
-  const { signIn } = useContext(AuthContext);
+  const { user, signIn } = useContext(AuthContext);
+
+  // Testando se as informações de usuário gravaram corretamente no storage após logar
+  console.log(user);
 
   // eslint-disable-next-line @typescript-eslint/ban-types
   const handleSubmit = useCallback(
