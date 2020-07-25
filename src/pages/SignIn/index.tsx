@@ -75,7 +75,11 @@ const SignIn: React.FC = () => {
         }
 
         // Se não estiver instânciado em validationError, então retornamos uma mensagem genérica para mostrar nos Toast
-        addToast();
+        addToast({
+          type: 'error',
+          title: 'Erro na autenticação',
+          description: 'Ocorreu um erro ao fazer login, cheque as credênciais',
+        });
       }
     },
     [signIn, addToast],

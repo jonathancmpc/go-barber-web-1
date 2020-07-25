@@ -1,22 +1,47 @@
-import React, { createContext, useContext, useCallback } from 'react';
-import api from '../services/api';
+/* eslint-disable no-console */
+import React, { createContext, useContext, useCallback, useState } from 'react';
+import { uuid } from 'uuidv4';
+// import api from '../services/api';
 
 import ToastContainer from '../components/ToastContainer';
 
+export interface ToastMessage {
+  id: string;
+  type?: 'success' | 'error' | 'info';
+  title: string;
+  description?: string;
+}
+
 interface ToastContextData {
-  addToast(): void;
-  removeToast(): void;
+  addToast(message: Omit<ToastMessage, 'id'>): void;
+  removeToast(id: string): void;
 }
 
 const ToastContext = createContext<ToastContextData>({} as ToastContextData);
 
 const ToastProvider: React.FC = ({ children }) => {
-  const addToast = useCallback(() => {
-    console.log('addToast');
-  }, []);
+  /* Como podemos armazernar várias mensagens de Toast ao mesmo tempo, temos que começar com um array vazio */
+  const [messages, setMessages] = useState<ToastMessage[]>([]);
 
-  const removeToast = useCallback(() => {
-    console.log('removeToast');
+  const addToast = useCallback(
+    ({ type, title, description }: Omit<ToastMessage, 'id'>) => {
+      const id = uuid(); // Criando um id único para nossa mensagem de toast com uuidv4
+
+      const toast = {
+        id,
+        type,
+        title,
+        description,
+      };
+
+      setMessages([...messages, toast]);
+    },
+    [messages],
+  );
+
+  const removeToast = useCallback((id: string) => {
+    /* Retorna todas as mensagens que estão dentro do estado atual, menos aquela que foi passado o id */
+    setMessages(oldmessage => oldmessage.filter(message => message.id !== id));
   }, []);
 
   // Retorna um módulo com as informações do usuário através do contexto. Repassamos o método signIn com as informações do usuário
@@ -25,7 +50,7 @@ const ToastProvider: React.FC = ({ children }) => {
       <ToastContext.Provider value={{ addToast, removeToast }}>
         {children}
 
-        <ToastContainer />
+        <ToastContainer messages={messages} />
       </ToastContext.Provider>
     </>
   );
