@@ -17,6 +17,7 @@ interface SignInCredentials {
 interface AuthContextData {
   user: object;
   signIn(credentialsUsers: SignInCredentials): Promise<void>;
+  signOut(): void;
 }
 
 // As informações que iremos passar de Contexto tem o objetivo de ficar disponível para ser acessada em qualquer página
@@ -56,10 +57,18 @@ const AuthProvider: React.FC = ({ children }) => {
     setData({ token, user });
   }, []);
 
+  // Método para deslogar da aplicação(Logout)
+  const signOut = useCallback(() => {
+    localStorage.remove('@GoBarber:token');
+    localStorage.remove('@GoBarber:user');
+
+    setData({} as AuthState);
+  }, []);
+
   // Retorna um módulo com as informações do usuário através do contexto. Repassamos o método signIn com as informações do usuário
   return (
     <>
-      <AuthContext.Provider value={{ user: data.user, signIn }}>
+      <AuthContext.Provider value={{ user: data.user, signIn, signOut }}>
         {children}
       </AuthContext.Provider>
     </>
