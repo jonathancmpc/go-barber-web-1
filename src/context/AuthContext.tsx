@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import React, { createContext, useCallback, useState } from 'react';
+import React, { createContext, useCallback, useState, useContext } from 'react';
 import api from '../services/api';
 
 interface AuthState {
@@ -66,4 +66,17 @@ const AuthProvider: React.FC = ({ children }) => {
   );
 };
 
-export { AuthContext, AuthProvider };
+// Criando o nosso próprio Hook de contexto e retornando o próprio AuthContext.(Apenas para o código não ficar muito verboso quando formos chamar o contexto)
+function useAuth(): AuthContextData {
+  const context = useContext(AuthContext);
+
+  // Então verificamos se o useAuth está sendo usado sem passar AuthProvider por volta do app/página, então retorna um erro.
+  // Isso é mais para ajudar algum desenvolvedor que irá fazer manutenção na aplicação.
+  if (!context) {
+    throw new Error('useAuth must bu used within a AuthProvider');
+  }
+
+  return context;
+}
+
+export { AuthProvider, useAuth };

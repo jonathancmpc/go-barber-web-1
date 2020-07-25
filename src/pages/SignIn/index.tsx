@@ -1,10 +1,10 @@
-import React, { useRef, useCallback, useContext } from 'react';
+import React, { useRef, useCallback } from 'react';
 import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
 
-import { AuthContext } from '../../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import getValidationErros from '../../utils/getValidationErros';
 
 import logoImg from '../../assets/logo.svg';
@@ -27,10 +27,8 @@ const SignIn: React.FC = () => {
   /* console.log(formRef); */
 
   // Buscamos o método signIn em nosso Context, para salvarmos as informações do usuário para serem usadas em todas as páginas.
-  const { user, signIn } = useContext(AuthContext);
-
-  // Testando se as informações de usuário gravaram corretamente no storage após logar
-  console.log(user);
+  // Fizemos um hook para o código ficar melhor visualmente para substiruir o useContext(AuthContext)
+  const { signIn } = useAuth();
 
   // eslint-disable-next-line @typescript-eslint/ban-types
   const handleSubmit = useCallback(
