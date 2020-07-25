@@ -61,13 +61,18 @@ const SignIn: React.FC = () => {
       } catch (err) {
         // console.log(err);
 
-        // Utilizando a função que criamos para percorrer os erros e trazer um objeto com o name:mensagem que passamos no yup.
-        const errors = getValidationErros(err);
-        // console.log(errors);
+        // Se o erros forem originados no Yup validate através da instancia do Yup chamada ValidationError então pegamos os erros para mostrar
+        if (err instanceof Yup.ValidationError) {
+          // Utilizando a função que criamos para percorrer os erros e trazer um objeto com o name:mensagem que passamos no yup.
+          const errors = getValidationErros(err);
+          // console.log(errors);
 
-        // Enviando os erros para aparecer no input através do useRef/Unform com a variável error(input). Onde errors é um objeto retornado da função getValidationErrors com o name de cada input.
-        // Traz as mensagens de erros que configuramos no Yup.
-        formRef.current?.setErrors(errors);
+          // Enviando os erros para aparecer no input através do useRef/Unform com a variável error(input). Onde errors é um objeto retornado da função getValidationErrors com o name de cada input.
+          // Traz as mensagens de erros que configuramos no Yup.
+          formRef.current?.setErrors(errors);
+        }
+
+        // Se não estiver instânciado em validationError, então retornamos uma mensagem genérica para mostrar nos Toast
       }
     },
     [signIn],
