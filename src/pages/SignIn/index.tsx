@@ -14,7 +14,7 @@ import logoImg from '../../assets/logo.svg';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 
-import { Container, Content, Background } from './styles';
+import { Container, Content, AnimationContainer, Background } from './styles';
 
 // Interface formada para passar os tipos corretos para as informações de email e senha ao signIn(Context)
 interface SignInFormData {
@@ -73,6 +73,9 @@ const SignIn: React.FC = () => {
           // Enviando os erros para aparecer no input através do useRef/Unform com a variável error(input). Onde errors é um objeto retornado da função getValidationErrors com o name de cada input.
           // Traz as mensagens de erros que configuramos no Yup.
           formRef.current?.setErrors(errors);
+
+          /* Com o return, ele não continua processando o resto do código quando o erro não for de validação */
+          return;
         }
 
         // Se não estiver instânciado em validationError, então retornamos uma mensagem genérica para mostrar nos Toast
@@ -89,29 +92,32 @@ const SignIn: React.FC = () => {
   return (
     <Container>
       <Content>
-        <img src={logoImg} alt="Logo GoBarber" />
+        {/* Criamos o AnimationContainer para fazermos uma transição entre as páginas */}
+        <AnimationContainer>
+          <img src={logoImg} alt="Logo GoBarber" />
 
-        <Form ref={formRef} onSubmit={handleSubmit}>
-          <h1>Faça seu logon</h1>
+          <Form ref={formRef} onSubmit={handleSubmit}>
+            <h1>Faça seu logon</h1>
 
-          {/* Enviamos o ícone como propriedade do Input para utilizarmos no componente, lembramos que declaramos o type dele na interface como React.ComponentType, pq ele é um componente do react */}
-          <Input name="email" icon={FiMail} placeholder="E-mail" />
+            {/* Enviamos o ícone como propriedade do Input para utilizarmos no componente, lembramos que declaramos o type dele na interface como React.ComponentType, pq ele é um componente do react */}
+            <Input name="email" icon={FiMail} placeholder="E-mail" />
 
-          <Input
-            name="password"
-            icon={FiLock}
-            type="password"
-            placeholder="Senha"
-          />
+            <Input
+              name="password"
+              icon={FiLock}
+              type="password"
+              placeholder="Senha"
+            />
 
-          <Button type="submit">Entrar</Button>
+            <Button type="submit">Entrar</Button>
 
-          <a href="forgot">Esqueci minha senha</a>
-        </Form>
-        <Link to="/signup">
-          <FiLogIn />
-          Criar conta
-        </Link>
+            <a href="forgot">Esqueci minha senha</a>
+          </Form>
+          <Link to="/signup">
+            <FiLogIn />
+            Criar conta
+          </Link>
+        </AnimationContainer>
       </Content>
       <Background />
     </Container>
