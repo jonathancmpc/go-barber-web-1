@@ -3,7 +3,10 @@ import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
-import { Link } from 'react-router-dom'; /* Para conseguir fazer a navegação entre as páginas da aplicação */
+import {
+  Link,
+  useHistory,
+} from 'react-router-dom'; /* Para conseguir fazer a navegação entre as páginas da aplicação */
 
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
@@ -27,6 +30,8 @@ const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   // Podemos verificar no console todas as funções que podemos utilizar para manipular o current dentro do useRef.
   /* console.log(formRef); */
+
+  const history = useHistory();
 
   // Buscamos o método signIn em nosso Context, para salvarmos as informações do usuário para serem usadas em todas as páginas.
   // Fizemos um hook para o código ficar melhor visualmente para substiruir o useContext(AuthContext)
@@ -61,6 +66,8 @@ const SignIn: React.FC = () => {
           email: data.email,
           password: data.password,
         });
+        /* Redirecionando para a página de Dashboard depois da autenticação */
+        history.push('/dashboard');
       } catch (err) {
         // console.log(err);
 
@@ -86,7 +93,7 @@ const SignIn: React.FC = () => {
         });
       }
     },
-    [signIn, addToast],
+    [signIn, addToast, history],
   );
 
   return (
